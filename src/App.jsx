@@ -1,22 +1,14 @@
-import { useState } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import SupportForm from './pages/Support/SupportForm';
+import SupportConfirmation from './pages/Support/SupportConfirmation';
 
-function App() {
-
-  	return (
-		<>
-			<div style={{textAlign: 'center'}}>
-				<h1>
-					AllTrue.AI Assignment
-				</h1>
-				<h2>
-					Samit Bains
-				</h2>
-				<h3>
-					August 27, 2025
-				</h3>
-			</div>
-		</>
-	)
+export default function App() {
+	return (
+		<BrowserRouter>
+			<Routes>
+				<Route path="/" element={<SupportForm />} />
+				<Route path="/confirmation" element={<SupportConfirmation />} />
+			</Routes>
+		</BrowserRouter>
+	);
 }
-
-export default App
