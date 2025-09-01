@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchYesNo } from '../../_slices/supportSlice';
+import { fetchYesNo, fetchRandomJoke } from '../../_slices/supportSlice';
 import { Box, Typography, Paper, Grid, List, ListItem, ListItemText, Button, LinearProgress } from '@mui/material';
 
 const classes = {
@@ -37,10 +37,9 @@ const classes = {
 
 export default function SupportConfirmation() {
     const dispatch = useDispatch();
-    const supportForm = useSelector(state => state.support.supportForm);
-    const yesNo = useSelector(state => state.support.yesNo);
-    const loading = useSelector(state => state.support.loading);
-    const error  = useSelector(state => state.support.error);
+    const supportForm = useSelector((state) => state.support.supportForm);
+    const yesNo = useSelector((state) => state.support.yesNo);
+    const joke = useSelector((state) => state.support.joke);
 
     return (
         !supportForm ? (
@@ -88,14 +87,25 @@ export default function SupportConfirmation() {
                 </Paper>
                 <Paper elevation={3} sx={classes.yesNoPaper}>
                     <Typography variant="h4">Randomly Generate Yes or No</Typography>
-                        <div>
-                            <Button variant="outlined" onClick={() => dispatch(fetchYesNo())} sx={classes.apiButton}>
-                                Ask the API
-                            </Button>
-                            {loading && <LinearProgress />}
-                            {yesNo && <Typography>Answer: {yesNo}</Typography>}
-                            {error && <Typography style={classes.errorMessage}>Error: {error}</Typography>}
-                        </div>
+                    <div>
+                        <Button variant="outlined" onClick={() => dispatch(fetchYesNo())} sx={classes.apiButton}>
+                            Ask the API
+                        </Button>
+                        {yesNo.status === "loading" && <LinearProgress />}
+                        {yesNo.status === "succeeded" && <Typography>Answer: {yesNo.value}</Typography>}
+                        {yesNo.status === "failed" && <Typography style={classes.errorMessage}>Error: {yesNo.error}</Typography>}
+                    </div>
+                </Paper>
+                <Paper elevation={3} sx={classes.yesNoPaper}>
+                    <Typography variant="h4">Randomly Generate Joke</Typography>
+                    <div>
+                        <Button variant="outlined" onClick={() => dispatch(fetchRandomJoke())} sx={classes.apiButton}>
+                            Ask the API
+                        </Button>
+                        {joke.status === "loading" && <LinearProgress />}
+                        {joke.status === "succeeded"  && <Typography>{joke.value.setup} — <strong>{joke.value.punchline}</strong></Typography>}
+                        {joke.status === "failed" && <Typography style={classes.errorMessage}>Error: {joke.error}</Typography>}
+                    </div>
                 </Paper>
             </Box>
         )
