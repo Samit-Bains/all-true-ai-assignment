@@ -1,5 +1,6 @@
-import { useSelector } from 'react-redux';
-import { Box, Typography, Paper, Grid, List, ListItem, ListItemText } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchYesNo } from '../../_slices/supportSlice';
+import { Box, Typography, Paper, Grid, List, ListItem, ListItemText, Button, LinearProgress } from '@mui/material';
 
 const classes = {
     noFormText: {
@@ -19,11 +20,27 @@ const classes = {
     },
     listItemStyle: {
         pl: 0
+    },
+    yesNoPaper: {
+        mt: 3,
+        p: 2,
+        textAlign: 'center'
+    },
+    apiButton: {
+        mt: 3,
+        mb: 2
+    },
+    errorMessage: {
+        color: "red"
     }
 }
 
 export default function SupportConfirmation() {
+    const dispatch = useDispatch();
     const supportForm = useSelector(state => state.support.supportForm);
+    const yesNo = useSelector(state => state.support.yesNo);
+    const loading = useSelector(state => state.support.loading);
+    const error  = useSelector(state => state.support.error);
 
     return (
         !supportForm ? (
@@ -68,6 +85,17 @@ export default function SupportConfirmation() {
                             )}
                         </Grid>
                     </Grid>
+                </Paper>
+                <Paper elevation={3} sx={classes.yesNoPaper}>
+                    <Typography variant="h4">Randomly Generate Yes or No</Typography>
+                        <div>
+                            <Button variant="outlined" onClick={() => dispatch(fetchYesNo())} sx={classes.apiButton}>
+                                Ask the API
+                            </Button>
+                            {loading && <LinearProgress />}
+                            {yesNo && <Typography>Answer: {yesNo}</Typography>}
+                            {error && <Typography style={classes.errorMessage}>Error: {error}</Typography>}
+                        </div>
                 </Paper>
             </Box>
         )
